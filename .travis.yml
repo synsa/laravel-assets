@@ -6,19 +6,24 @@ php:
   - 5.5
   - hhvm
 
+## Travis is faster if we do not need sudo
 sudo: false
+
+## Cache composer bits
+cache:
+  directories:
+    - $HOME/.composer/cache
 
 env:
   matrix:
     - PREFER_LOWEST="--prefer-lowest"
     - PREFER_LOWEST=""
 
-before_script:
-  - composer self-update
-  - composer update --no-interaction $PREFER_LOWEST
+install:
+  - travis_retry composer update --no-interaction $PREFER_LOWEST
 
 script:
-  - phpunit --coverage-clover build/logs/clover.xml
+  - phpunit --coverage-clover tests/clover.xml
 
 after_script:
   - php vendor/bin/coveralls --verbose
