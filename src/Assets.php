@@ -511,7 +511,7 @@ class Assets {
 				if ($this->isAbsoluteUrl($asset)) {
 					$data = $this->getLoader()->loadUrl($asset);
 				} else {
-					$data = $this->public->read($source_dir . '/' . $asset);
+					$data = (string) $this->public->read($source_dir . '/' . $asset);
 				}
 				foreach ($filters as $filter) {
 					$data = $filter->filter($data, $asset, $this);
@@ -544,7 +544,7 @@ class Assets {
 		if ($this->isEnabled()) {
 			$inline_threshold = $this->getInlineThreshold();
 			if ($inline_threshold > 0 && $this->public->getSize($asset_file) <= $inline_threshold) {
-				return sprintf($format_inline, $this->public->read($asset_file));
+				return sprintf($format_inline, (string) $this->public->read($asset_file));
 			} else {
 				return $this->htmlLinks($url, [$hash], '.min' . $extension, $format_link, $attributes);
 			}
@@ -579,7 +579,7 @@ class Assets {
 		if (!$this->public->has($path . '/' . $destination . $extension)) {
 			$data = '';
 			foreach ($sources as $source) {
-				$data .= $this->public->read($path . '/' . $source . $extension);
+				$data .= (string) $this->public->read($path . '/' . $source . $extension);
 			}
 			$this->public->write($path . '/' . $destination . $extension, $data);
 		}
@@ -605,7 +605,7 @@ class Assets {
 		$gzip = $this->getGzipStatic();
 
 		if ($gzip >= 1 && $gzip <= 9 && function_exists('gzcompress') && !$this->public->has($path . '.gz')) {
-			$content    = $this->public->read($path);
+			$content    = (string) $this->public->read($path);
 			$content_gz = gzcompress($content, $gzip);
 			$this->public->write($path . '.gz', $content_gz);
 		}
